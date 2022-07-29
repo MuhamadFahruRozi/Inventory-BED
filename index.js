@@ -21,7 +21,7 @@ app.use(express.json())
 const cors = require("cors");
 app.use(cors({origin: true, credentials: true}));
 
-app.listen(PORT, () => {
+app.listen(PORT || 8000, () => {
     console.log(`Server is running on port: http://localhost:${PORT}`)
 });
 

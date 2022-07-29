@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "serv": "node index.js",
-    "mon": "nodemon index.js"
+    "server": "nodemon index.js",
+    "serv": "nodemon index.js",
+    "heroku-postbuild": "npm install && npm run build",
   },
   "author": "Muhamad Fahru Rozi",
   "license": "ISC",

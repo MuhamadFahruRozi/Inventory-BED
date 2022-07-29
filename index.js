@@ -8,7 +8,6 @@ const salesRoutes = require('./routes/sales')
 const totalRoutes = require('./routes/totalPerTransaksi')
 const userRoutes = require('./routes/user')
 const mongoose = require('mongoose');
-const PORT = 8000;
 
 //connect MongoDB
 mongoose.connect("mongodb://mufaro:mewmewnyaa11@portofolio-shard-00-00.txfzk.mongodb.net:27017,portofolio-shard-00-01.txfzk.mongodb.net:27017,portofolio-shard-00-02.txfzk.mongodb.net:27017/invent?ssl=true&replicaSet=atlas-6836hm-shard-0&authSource=admin&retryWrites=true&w=majority").then(() => {
@@ -21,8 +20,8 @@ app.use(express.json())
 const cors = require("cors");
 app.use(cors({origin: true, credentials: true}));
 
-app.listen(PORT || 8000, () => {
-    console.log(`Server is running on port: http://localhost:${PORT}`)
+app.listen(process.env.PORT || 8000, () => {
+    console.log(`Server is running on port: http://localhost:${process.env.PORT}`)
 });
 
 //Routes

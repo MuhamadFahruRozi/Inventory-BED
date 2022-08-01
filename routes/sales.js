@@ -34,7 +34,10 @@ router.get('/', async (req, res) => {
                 foreignField: 'id_barang',
                 as: 'detail_barang'
             }
-        }])
+        }]).sort({
+            createdAt: desc
+        })
+
         res.status(200).json(data)
     }catch(err){
         res.status(500).json(err)

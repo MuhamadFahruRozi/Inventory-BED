@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
                 as: 'detail_barang'
             }
         }]).sort({
-            createdAt: desc
+            createdAt: 'desc'
         })
 
         res.status(200).json(data)

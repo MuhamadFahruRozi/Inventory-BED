@@ -6,6 +6,34 @@ const cloudinary = require('../utils/cloudinary')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
+//newUser
+router.post("/", upload.single('propic'), async (req, res) => {
+    try{
+        //project
+        const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
+                    +"-"+Math.floor(Math.random() * 10000 + 1)
+                    +"-"+Math.floor(Math.random() * 10000 + 1);
+        const uploadup = await cloudinary.uploader.upload(req.file.path);
+        const newUSER = new User({
+            slug: slug,
+            user_id: req.body.user_id,
+            username: req.body.username,
+            email: req.body.email,
+            password: req.body.password,
+            status: req.body.status,
+            pic_id:uploadup.public_id,
+            pic_url:uploadup.secure_url,
+            createdAt: new Date(),
+            updatedAt: new Date()
+        });
+        await newUSER.save();
+        
+        res.status(200).json(newUser)
+    }catch(err){
+        res.status(500).json(err)
+    }
+})
+
 //updateProfile
 router.put('/:slug', upload.single('propic') ,async (req, res) => {
     try{
@@ -83,6 +111,7 @@ router.post('/login', upload.single(), async (req, res) => {
                 user_id: user.user_id,
                 username: user.username,
                 email: user.email,
+                pic_url: user.pic_url,
                 status: user.status,
                 accessToken,
                 refreshToken
@@ -174,10 +203,10 @@ router.post('/logout', upload.single(), verify, async (req, res) => {
 })
 
 //userData
-router.get('/profile', upload.single() , async (req, res) => {
+router.get('/profile/:slug', upload.single() , async (req, res) => {
     try{
-        const users = await User.find()
-        res.status(200).json(users)
+        const user = await User.findOne({ slug: req.params.slug})
+        res.status(200).json(user)
     }catch(err){
         res.status(500).json(err)
     }

@@ -124,18 +124,18 @@ router.post('/login', upload.single(), async (req, res) => {
         const user = await User.findOne({username, password})
 
         if (user) {
-            // const accessToken = generateAccessToken(user)
-            // const refreshToken = generateRefreshToken(user)
-            // refreshTokens.push(refreshToken)
+            const accessToken = generateAccessToken(user)
+            const refreshToken = generateRefreshToken(user)
+            refreshTokens.push(refreshToken)
             res.status(200).json({
                 slug: user.slug,
-                // user_id: user.user_id,
-                // username: user.username,
-                // email: user.email,
-                // pic_url: user.pic_url,
-                // status: user.status,
-                // accessToken,
-                // refreshToken
+                user_id: user.user_id,
+                username: user.username,
+                email: user.email,
+                pic_url: user.pic_url,
+                status: user.status,
+                accessToken,
+                refreshToken
             })
         } else {
             res.status(400).json('Username or Password incorrect!')

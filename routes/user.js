@@ -9,12 +9,30 @@ const bcrypt = require('bcryptjs')
 //newUser
 router.post("/", upload.single('propic'), async (req, res) => {
     try{
-        //project
+        if(!req.file){
+            const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
+                    +"-"+Math.floor(Math.random() * 10000 + 1)
+                    +"-"+Math.floor(Math.random() * 10000 + 1);
+            const newUser = new User({
+                slug: slug,
+                user_id: req.body.user_id,
+                username: req.body.username,
+                email: req.body.email,
+                password: req.body.password,
+                status: req.body.status,
+                pic_id: "",
+                pic_url: "",
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
+            await newUser.save();
+            res.status(200).json(newUser)
+        } else {
         const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
                     +"-"+Math.floor(Math.random() * 10000 + 1)
                     +"-"+Math.floor(Math.random() * 10000 + 1);
         const uploadup = await cloudinary.uploader.upload(req.file.path);
-        const newUSER = new User({
+        const newUser = new User({
             slug: slug,
             user_id: req.body.user_id,
             username: req.body.username,
@@ -26,9 +44,9 @@ router.post("/", upload.single('propic'), async (req, res) => {
             createdAt: new Date(),
             updatedAt: new Date()
         });
-        await newUSER.save();
-        
+        await newUser.save();
         res.status(200).json(newUser)
+        }
     }catch(err){
         res.status(500).json(err)
     }
@@ -41,7 +59,10 @@ router.put('/:slug', upload.single('propic') ,async (req, res) => {
             const updateUser = await User.findOneAndUpdate(
             { slug: req.params.slug },
             {
+                username: req.body.username,
+                email: req.body.email,
                 password: req.params.password,
+                status: req.body.status,
                 updatedAt: new Date()
             })
             res.status(200).json(updateUser)
@@ -50,7 +71,10 @@ router.put('/:slug', upload.single('propic') ,async (req, res) => {
             const updateUser = await User.findOneAndUpdate(
             { slug: req.params.slug },
             {
+                username: req.body.username,
+                email: req.body.email,
                 password: req.params.password,
+                status: req.body.status,
                 pic_url: uploadPic.secure_url,
                 pic_id: uploadPic.public_id,
                 updatedAt: new Date()
@@ -108,6 +132,7 @@ router.post('/login', upload.single(), async (req, res) => {
             const refreshToken = generateRefreshToken(user)
             refreshTokens.push(refreshToken)
             res.status(200).json({
+                slug: user.slug,
                 user_id: user.user_id,
                 username: user.username,
                 email: user.email,

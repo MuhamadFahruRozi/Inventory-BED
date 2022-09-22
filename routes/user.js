@@ -234,31 +234,31 @@ router.post('/logout', upload.single(), verify, async (req, res) => {
 // })
 
 //userData
-router.get('/:slug', upload.single() , async (req, res) => {
-    try{
-        const user = await User.findOne({ slug: req.params.slug})
-        if (user) {
-            const accessToken = generateAccessToken(user)
-            const refreshToken = generateRefreshToken(user)
-            refreshTokens.push(refreshToken)
-            res.status(200).json({
-                slug: user.slug,
-                user_id: user.user_id,
-                username: user.username,
-                email: user.email,
-                pic_url: user.pic_url,
-                status: user.status,
-                accessToken,
-                refreshToken
-            })
-        } else {
-            res.status(400).json('Username or Password incorrect!')
-        }
-        res.status(200).json(user)
-    }catch(err){
-        res.status(500).json(err)
-    }
-})
+// router.get('/:slug', upload.single() , async (req, res) => {
+//     try{
+//         const user = await User.findOne({ slug: req.params.slug})
+//         if (user) {
+//             const accessToken = generateAccessToken(user)
+//             const refreshToken = generateRefreshToken(user)
+//             refreshTokens.push(refreshToken)
+//             res.status(200).json({
+//                 slug: user.slug,
+//                 user_id: user.user_id,
+//                 username: user.username,
+//                 email: user.email,
+//                 pic_url: user.pic_url,
+//                 status: user.status,
+//                 accessToken,
+//                 refreshToken
+//             })
+//         } else {
+//             res.status(400).json('Username or Password incorrect!')
+//         }
+//         res.status(200).json(user)
+//     }catch(err){
+//         res.status(500).json(err)
+//     }
+// })
 
 //getAll
 router.get('/', async (req, res) => {

@@ -238,9 +238,9 @@ router.get('/profile/:slug', upload.single() , async (req, res) => {
     try{
         const user = await User.findOne({ slug: req.params.slug})
         if (user) {
-            // const accessToken = generateAccessToken(user)
-            // const refreshToken = generateRefreshToken(user)
-            // refreshTokens.push(refreshToken)
+            const accessToken = generateAccessToken(user)
+            const refreshToken = generateRefreshToken(user)
+            refreshTokens.push(refreshToken)
             res.status(200).json({
                 slug: user.slug,
                 user_id: user.user_id,
@@ -248,8 +248,8 @@ router.get('/profile/:slug', upload.single() , async (req, res) => {
                 email: user.email,
                 pic_url: user.pic_url,
                 status: user.status,
-                // accessToken,
-                // refreshToken
+                accessToken,
+                refreshToken
             })
         } else {
             res.status(400).json('Request Rejected!')

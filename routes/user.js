@@ -13,9 +13,13 @@ router.post("/", upload.single('propic'), async (req, res) => {
             const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
                     +"-"+Math.floor(Math.random() * 10000 + 1)
                     +"-"+Math.floor(Math.random() * 10000 + 1);
+            const user_id = "ID-USR-INV"+Math.floor(Math.random() * 10000 + 1)    
+                    +"-"+Math.floor(Math.random() * 10000 + 1)
+                    +"-"+Math.floor(Math.random() * 10000 + 1)
+                    +"-"+Math.floor(Math.random() * 10000 + 1);
             const newUser = new User({
                 slug: slug,
-                user_id: req.body.user_id,
+                user_id: user_id,
                 username: req.body.username,
                 email: req.body.email,
                 password: req.body.password,
@@ -28,24 +32,28 @@ router.post("/", upload.single('propic'), async (req, res) => {
             await newUser.save();
             res.status(200).json(newUser)
         } else {
-        const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
+            const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
                     +"-"+Math.floor(Math.random() * 10000 + 1)
                     +"-"+Math.floor(Math.random() * 10000 + 1);
-        const uploadup = await cloudinary.uploader.upload(req.file.path);
-        const newUser = new User({
-            slug: slug,
-            user_id: req.body.user_id,
-            username: req.body.username,
-            email: req.body.email,
-            password: req.body.password,
-            status: req.body.status,
-            pic_id:uploadup.public_id,
-            pic_url:uploadup.secure_url,
-            createdAt: new Date(),
-            updatedAt: new Date()
-        });
-        await newUser.save();
-        res.status(200).json(newUser)
+            const user_id = "ID-USR-INV"+Math.floor(Math.random() * 10000 + 1)    
+                    +"-"+Math.floor(Math.random() * 10000 + 1)
+                    +"-"+Math.floor(Math.random() * 10000 + 1)
+                    +"-"+Math.floor(Math.random() * 10000 + 1);
+            const uploadup = await cloudinary.uploader.upload(req.file.path);
+            const newUser = new User({
+                slug: slug,
+                user_id: user_id,
+                username: req.body.username,
+                email: req.body.email,
+                password: req.body.password,
+                status: req.body.status,
+                pic_id:uploadup.public_id,
+                pic_url:uploadup.secure_url,
+                createdAt: new Date(),
+                updatedAt: new Date()
+            });
+            await newUser.save();
+            res.status(200).json(newUser)
         }
     }catch(err){
         res.status(500).json(err)

@@ -31,11 +31,9 @@ const UserSchema = new mongoose.Schema({
     },
     pic_url:{
         type: String,
-        required: true,
     },
     pic_id:{
         type: String,
-        required: true,
     },
     createdAt:{
         type:Date,

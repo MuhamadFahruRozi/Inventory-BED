@@ -61,7 +61,7 @@ router.put('/:slug', upload.single('propic') ,async (req, res) => {
             {
                 username: req.body.username,
                 email: req.body.email,
-                password: req.params.password,
+                password: req.body.password,
                 status: req.body.status,
                 updatedAt: new Date()
             })
@@ -73,7 +73,7 @@ router.put('/:slug', upload.single('propic') ,async (req, res) => {
             {
                 username: req.body.username,
                 email: req.body.email,
-                password: req.params.password,
+                password: req.body.password,
                 status: req.body.status,
                 pic_url: uploadPic.secure_url,
                 pic_id: uploadPic.public_id,

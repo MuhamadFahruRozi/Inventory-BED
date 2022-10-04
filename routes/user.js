@@ -96,7 +96,7 @@ router.put('/:slug', upload.single('propic') ,async (req, res) => {
 
 const generateAccessToken = (user) => {
     return jwt.sign({user_id: user.user_id ,username: user.username, status: user.status }
-        , 'myKeyWryyyyyy', { expiresIn: '5s' } )
+        , 'myKeyWryyyyyy', { expiresIn: '1m' } )
 }
 
 const generateRefreshToken = (user) => {

@@ -209,11 +209,11 @@ const verify = (req, res, next) => {
 }
 
 
-router.delete('/delete/:userId', upload.single(), async (req, res) => {
-// router.delete('/delete/:userId', upload.single(), verify, async (req, res) => {
+// router.delete('/delete/:userId', upload.single(), async (req, res) => {
+router.delete('/delete/:userId', upload.single(), verify, async (req, res) => {
     try{
-        if(req.params.user_id === req.params.userId || req.body.status === 'admin' ) {
-        // if(req.user.user_id === req.params.userId || req.user.status === 'admin' ) {
+        // if(req.params.user_id === req.params.userId || req.body.status === 'admin' ) {
+        if(req.user.user_id === req.params.userId || req.user.status === 'admin' ) {
             res.status(200).json('User has been deleted.')
         } else {
             res.status(403).json('You are not allowed to delete this user!')
@@ -223,19 +223,19 @@ router.delete('/delete/:userId', upload.single(), async (req, res) => {
     }
 })
 
-router.post('/delete/:userId', upload.single(), async (req, res) => {
-    // router.delete('/delete/:userId', upload.single(), verify, async (req, res) => {
-        try{
-            if(req.params.user_id === req.params.userId || req.body.status === 'admin' ) {
-            // if(req.user.user_id === req.params.userId || req.user.status === 'admin' ) {
-                res.status(200).json('User has been deleted.')
-            } else {
-                res.status(403).json('You are not allowed to delete this user!')
-            }
-        }catch(err){
-            res.status(500).json(err)
-        }
-    })
+// router.post('/delete/:userId', upload.single(), async (req, res) => {
+//     // router.delete('/delete/:userId', upload.single(), verify, async (req, res) => {
+//         try{
+//             if(req.params.user_id === req.params.userId || req.body.status === 'admin' ) {
+//             // if(req.user.user_id === req.params.userId || req.user.status === 'admin' ) {
+//                 res.status(200).json('User has been deleted.')
+//             } else {
+//                 res.status(403).json('You are not allowed to delete this user!')
+//             }
+//         }catch(err){
+//             res.status(500).json(err)
+//         }
+//     })
 
 //logout
 router.post('/logout', upload.single(), verify, async (req, res) => {

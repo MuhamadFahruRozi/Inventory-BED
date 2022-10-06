@@ -139,6 +139,7 @@ router.post('/login', upload.single(), async (req, res) => {
                 slug: user.slug,
                 user_id: user.user_id,
                 username: user.username,
+                password: user.password,
                 email: user.email,
                 pic_url: user.pic_url,
                 status: user.status,

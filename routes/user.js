@@ -6,8 +6,41 @@ const cloudinary = require('../utils/cloudinary')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 
+//AccessToken
+const generateAccessToken = (user) => {
+    return jwt.sign({user_id: user.user_id ,username: user.username, status: user.status }
+        , 'myKeyWryyyyyy', { expiresIn: '1m' } )
+}
+
+//RefreshToken
+const generateRefreshToken = (user) => {
+    return jwt.sign({user_id: user.user_id ,username: user.username, status: user.status }
+        , 'myResfreshKeyWryyyyyy')
+}
+
+//verify auth header
+const verify = (req, res, next) => {
+    const authHeader = req.headers.authorization
+    
+    if(authHeader) {
+        // const token = authHeader.split(' ')[1];
+
+        //wrong in token, raw token authHeader is right
+        jwt.verify(authHeader, 'myKeyWryyyyyy', (err, user) => {
+            if(err) {
+                return res.status(403).json('Token is not valid')
+            }
+
+            req.user = user;
+            next()
+        })
+    } else {
+        res.status(401).json('You are not auntheticated!')
+    }
+}
+
 //newUser
-router.post("/", upload.single('propic'), async (req, res) => {
+router.post("/", upload.single('propic'), verify, async (req, res) => {
     try{
         if(!req.file){
             const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
@@ -61,7 +94,7 @@ router.post("/", upload.single('propic'), async (req, res) => {
 })
 
 //updateProfile
-router.put('/:slug', upload.single('propic') ,async (req, res) => {
+router.put('/:slug', upload.single('propic'), verify, async (req, res) => {
     try{
         if(!req.file){
             const updateUser = await User.findOneAndUpdate(
@@ -94,16 +127,6 @@ router.put('/:slug', upload.single('propic') ,async (req, res) => {
     }
 })
 
-const generateAccessToken = (user) => {
-    return jwt.sign({user_id: user.user_id ,username: user.username, status: user.status }
-        , 'myKeyWryyyyyy', { expiresIn: '1m' } )
-}
-
-const generateRefreshToken = (user) => {
-    return jwt.sign({user_id: user.user_id ,username: user.username, status: user.status }
-        , 'myResfreshKeyWryyyyyy')
-}
-
 //loginAttemp
 router.get('/tryLogin', upload.single(), async (req, res) => {
     try{
@@ -117,8 +140,6 @@ router.get('/tryLogin', upload.single(), async (req, res) => {
         });
         
         res.status(200).json(namePassLogin)
-        
-        // res.status(200).json(namePassLogin)
     }catch(err){
         res.status(500).json(err)
     }
@@ -139,7 +160,6 @@ router.post('/login', upload.single(), async (req, res) => {
                 slug: user.slug,
                 user_id: user.user_id,
                 username: user.username,
-                password: user.password,
                 email: user.email,
                 pic_url: user.pic_url,
                 status: user.status,
@@ -189,25 +209,7 @@ router.post('/tokenRefresh', upload.single(), (req, res) => {
     })
 })
 
-const verify = (req, res, next) => {
-    const authHeader = req.headers.authorization
-    
-    if(authHeader) {
-        // const token = authHeader.split(' ')[1];
 
-        //wrong in token, raw token authHeader is right
-        jwt.verify(authHeader, 'myKeyWryyyyyy', (err, user) => {
-            if(err) {
-                return res.status(403).json('Token is not valid')
-            }
-
-            req.user = user;
-            next()
-        })
-    } else {
-        res.status(401).json('You are not auntheticated!')
-    }
-}
 
 
 // router.delete('/delete/:userId', upload.single(), async (req, res) => {
@@ -215,6 +217,7 @@ router.delete('/delete/:userId', upload.single(), verify, async (req, res) => {
     try{
         // if(req.params.user_id === req.params.userId || req.body.status === 'admin' ) {
         if(req.user.user_id === req.params.userId || req.user.status === 'admin' ) {
+            const del = await User.deleteOne({ user_id: req.params.userId })
             res.status(200).json('User has been deleted.')
         } else {
             res.status(403).json('You are not allowed to delete this user!')
@@ -224,19 +227,6 @@ router.delete('/delete/:userId', upload.single(), verify, async (req, res) => {
     }
 })
 
-// router.post('/delete/:userId', upload.single(), async (req, res) => {
-//     // router.delete('/delete/:userId', upload.single(), verify, async (req, res) => {
-//         try{
-//             if(req.params.user_id === req.params.userId || req.body.status === 'admin' ) {
-//             // if(req.user.user_id === req.params.userId || req.user.status === 'admin' ) {
-//                 res.status(200).json('User has been deleted.')
-//             } else {
-//                 res.status(403).json('You are not allowed to delete this user!')
-//             }
-//         }catch(err){
-//             res.status(500).json(err)
-//         }
-//     })
 
 //logout
 router.post('/logout', upload.single(), verify, async (req, res) => {
@@ -249,18 +239,9 @@ router.post('/logout', upload.single(), verify, async (req, res) => {
     }
 })
 
-//userData
-// router.get('/profile/:slug', upload.single() , async (req, res) => {
-//     try{
-//         const user = await User.findOne({ slug: req.params.slug})
-//         res.status(200).json(user)
-//     }catch(err){
-//         res.status(500).json(err)
-//     }
-// })
 
 // userData
-router.get('/profile/:slug', upload.single() , async (req, res) => {
+router.get('/profile/:slug', upload.single(), async (req, res) => {
     try{
         const user = await User.findOne({ slug: req.params.slug})
         if (user) {

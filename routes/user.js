@@ -42,51 +42,55 @@ const verify = (req, res, next) => {
 //newUser
 router.post("/", upload.single('propic'), verify, async (req, res) => {
     try{
-        if(!req.file){
-            const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
-                    +"-"+Math.floor(Math.random() * 10000 + 1)
-                    +"-"+Math.floor(Math.random() * 10000 + 1);
-            const user_id = "ID-USR-INV"+Math.floor(Math.random() * 10000 + 1)    
-                    +"-"+Math.floor(Math.random() * 10000 + 1)
-                    +"-"+Math.floor(Math.random() * 10000 + 1)
-                    +"-"+Math.floor(Math.random() * 10000 + 1);
-            const newUser = new User({
-                slug: slug,
-                user_id: user_id,
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password,
-                status: req.body.status,
-                pic_id: "",
-                pic_url: "",
-                createdAt: new Date(),
-                updatedAt: new Date()
-            });
-            await newUser.save();
-            res.status(200).json(newUser)
+        if(req.user.status === 'admin' ) {
+            if(!req.file){
+                const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
+                        +"-"+Math.floor(Math.random() * 10000 + 1)
+                        +"-"+Math.floor(Math.random() * 10000 + 1);
+                const user_id = "ID-USR-INV"+Math.floor(Math.random() * 10000 + 1)    
+                        +"-"+Math.floor(Math.random() * 10000 + 1)
+                        +"-"+Math.floor(Math.random() * 10000 + 1)
+                        +"-"+Math.floor(Math.random() * 10000 + 1);
+                const newUser = new User({
+                    slug: slug,
+                    user_id: user_id,
+                    username: req.body.username,
+                    email: req.body.email,
+                    password: req.body.password,
+                    status: req.body.status,
+                    pic_id: "",
+                    pic_url: "",
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+                await newUser.save();
+                res.status(200).json(newUser)
+            } else {
+                const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
+                        +"-"+Math.floor(Math.random() * 10000 + 1)
+                        +"-"+Math.floor(Math.random() * 10000 + 1);
+                const user_id = "ID-USR-INV"+Math.floor(Math.random() * 10000 + 1)    
+                        +"-"+Math.floor(Math.random() * 10000 + 1)
+                        +"-"+Math.floor(Math.random() * 10000 + 1)
+                        +"-"+Math.floor(Math.random() * 10000 + 1);
+                const uploadup = await cloudinary.uploader.upload(req.file.path);
+                const newUser = new User({
+                    slug: slug,
+                    user_id: user_id,
+                    username: req.body.username,
+                    email: req.body.email,
+                    password: req.body.password,
+                    status: req.body.status,
+                    pic_id:uploadup.public_id,
+                    pic_url:uploadup.secure_url,
+                    createdAt: new Date(),
+                    updatedAt: new Date()
+                });
+                await newUser.save();
+                res.status(200).json(newUser)
+            }
         } else {
-            const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
-                    +"-"+Math.floor(Math.random() * 10000 + 1)
-                    +"-"+Math.floor(Math.random() * 10000 + 1);
-            const user_id = "ID-USR-INV"+Math.floor(Math.random() * 10000 + 1)    
-                    +"-"+Math.floor(Math.random() * 10000 + 1)
-                    +"-"+Math.floor(Math.random() * 10000 + 1)
-                    +"-"+Math.floor(Math.random() * 10000 + 1);
-            const uploadup = await cloudinary.uploader.upload(req.file.path);
-            const newUser = new User({
-                slug: slug,
-                user_id: user_id,
-                username: req.body.username,
-                email: req.body.email,
-                password: req.body.password,
-                status: req.body.status,
-                pic_id:uploadup.public_id,
-                pic_url:uploadup.secure_url,
-                createdAt: new Date(),
-                updatedAt: new Date()
-            });
-            await newUser.save();
-            res.status(200).json(newUser)
+            res.status(403).json('You are not allowed to add new user!')
         }
     }catch(err){
         res.status(500).json(err)

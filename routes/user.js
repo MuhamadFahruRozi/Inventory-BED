@@ -40,9 +40,10 @@ const verify = (req, res, next) => {
 }
 
 //newUser
-router.post("/", upload.single('propic'), verify, async (req, res) => {
+// router.delete('/delete/:userId', upload.single(), verify, async (req, res) => {
+router.post("/", upload.single('propic'), async (req, res) => {
     try{
-        if(req.user.status === 'admin' ) {
+        // if(req.user.status === 'admin' ) {
             if(!req.file){
                 const slug = "USER-"+Math.floor(Math.random() * 10000 + 1)    
                         +"-"+Math.floor(Math.random() * 10000 + 1)
@@ -89,16 +90,16 @@ router.post("/", upload.single('propic'), verify, async (req, res) => {
                 await newUser.save();
                 res.status(200).json(newUser)
             }
-        } else {
-            res.status(403).json('You are not allowed to add new user!')
-        }
+        // } else {
+        //     res.status(403).json('You are not allowed to add new user!')
+        // }
     }catch(err){
         res.status(500).json(err)
     }
 })
 
 //updateProfile
-router.put('/:slug', upload.single('propic'), verify, async (req, res) => {
+router.put('/:slug', upload.single('propic'), async (req, res) => {
     try{
         if(!req.file){
             const updateUser = await User.findOneAndUpdate(
